@@ -1,0 +1,58 @@
+---
+title: "Changes in number of live births"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{livebirths}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(Vietnam)
+library(tidyverse)
+library(ggplot2)
+```
+
+## Calculate number of live births for each province
+
+```{r data}
+province_population <- Vietnam::vnm_population %>%
+  filter(!is.na(VID_1)) %>%
+  mutate(livebirth = crude_birth_rate * average_pop_k/1000) %>%
+  filter(!is.na(livebirth))
+```
+
+## Plot results
+
+### All provinces
+
+```{r plot_all}
+ggplot(data = province_population, aes(x = year, y = livebirth, group = VID_1)) +
+  geom_line() +
+  geom_point() +
+  scale_x_continuous(name = "Calendar year", breaks = c(2011:2023)) +
+  scale_y_continuous(name = "Number of live-births (thousands)") +
+  facet_wrap(~ province, scales = "free_y") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+### Ho Chi Minh City
+
+```{r plot_hcmc}
+ggplot(data = filter(province_population, province == "Hồ Chí Minh"), aes(x = year, y = livebirth)) +
+  geom_line() +
+  geom_point() +
+  scale_x_continuous(name = "Calendar year", breaks = c(2011:2023)) +
+  scale_y_continuous(name = "Number of live-births (thousands)", breaks = seq(from = 0, to = 150, by = 10), limits = c(0, 140)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45))
+```
+

@@ -1,0 +1,7 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+Development.qmd
+^data-raw$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
